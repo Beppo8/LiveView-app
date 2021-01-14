@@ -7,9 +7,19 @@ defmodule TeacherWeb.SessionController do
     render(conn, "new.html")
   end
 
+  def notify_sign_in(user) do
+    Phoenix.PubSub.broadcast(Teacher.PubSub, "current_users", {:sign_in, user.id})
+  end
+
+  def notify_sign_in(user_id) do
+    Phoenix.PubSub.broadcast(Teacher.PubSub, "current_users", {:sign_out, user_id})
+  end
+
   def create(conn, %{"session" => %{"email" => email, "password" => password}}) do
     case Auth.sign_in(email, password) do
       {:ok, user} ->
+        notify_sign_in(user)
+
         conn
         |> put_session(:current_user_id, user.id)
         |> put_flash(:info, "You have signed in successfully")
@@ -23,6 +33,10 @@ defmodule TeacherWeb.SessionController do
   end
 
   def delete(conn, _params) do
+    conn
+    |> get_session(:current_user_id)
+    |> notify_sign_out()
+
     conn
     |> delete_session(:current_user_id)
     |> put_flash(:error, "You have signed out")

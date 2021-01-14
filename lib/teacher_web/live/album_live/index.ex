@@ -6,9 +6,14 @@ defmodule TeacherWeb.AlbumLive.Index do
   alias TeacherWeb.Router.Helpers, as: Routes
 
   def mount(_session, socket) do
-    if connected?(socket), do: Recordings.subscribe()
+    if connected?(socket) do
+      Recordings.subscribe()
+      Phoenix.PubSub.subscribe(Teacher.PubSub, "current_users")
+    end
     albums = Recordings.list_albums()
-    {:ok, assign(socket, albums: albums, editable_id: nil)}
+    {:ok, assign(socket, albums: albums,
+                         users: TeacherWeb.Presence.list("users"),
+                         editable_id: nil)}
   end
 
   def render(assigns) do
@@ -41,6 +46,16 @@ defmodule TeacherWeb.AlbumLive.Index do
   def handle_info({:album_update, _album}, socket) do
     albums = Recordings.list_albums()
     {:noreply, assign(socket, albums: albums, editable_id: nil)}
+  end
+
+  def handle_info({:sign_in, user_id}, socket) do
+    TeacherWeb.Presence.track(self(), "users", user_id, %{})
+    {:noreply, assign(socket, users: TeacherWeb.Presence.list("users"))}
+  end
+
+  def handle_info({:sign_out, user_id}, socket) do
+    TeacherWeb.Presence.untrack(self(), "users", user_id)
+    {:noreply, assign(socket, users: TeacherWeb.Presence.list("users"))}
   end
 
 end
