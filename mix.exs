@@ -44,6 +44,7 @@ defmodule Teacher.MixProject do
       {:comeonin, "~> 4.1"},
       {:httpoison, "~> 1.5"},
       {:bcrypt_elixir, "~> 1.1"},
+      {:phoenix_live_view, github: "phoenixframework/phoenix_live_view"},
       {:plug_cowboy, "~> 2.0"}
     ]
   end

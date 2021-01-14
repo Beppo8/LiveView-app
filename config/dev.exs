@@ -11,6 +11,9 @@ config :teacher, TeacherWeb.Endpoint,
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
+  live_view: [
+    signing_salt: "wmeISnvaeMWEeSC+t3PHR7z4SU3iG0tu"
+  ],
   watchers: [
     node: [
       "node_modules/webpack/bin/webpack.js",
