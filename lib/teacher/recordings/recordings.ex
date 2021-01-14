@@ -87,6 +87,12 @@ defmodule Teacher.Recordings do
     album
     |> Album.changeset(attrs)
     |> Repo.update()
+    |> notify_album_subscribers(:album_update)
+  end
+
+  def notify_album_subscribers({:ok, album}, event) do
+    Phoenix.PubSub.broadcast(Teacher.PubSub, @topic, {event, album})
+    {:ok, album}
   end
 
   @doc """

@@ -38,4 +38,9 @@ defmodule TeacherWeb.AlbumLive.Index do
     end
   end
 
+  def handle_info({:album_update, _album}, socket) do
+    albums = Recordings.list_albums()
+    {:noreply, assign(socket, albums: albums, editable_id: nil)}
+  end
+
 end
