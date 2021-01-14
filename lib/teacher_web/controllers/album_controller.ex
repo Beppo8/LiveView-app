@@ -7,6 +7,7 @@ defmodule TeacherWeb.AlbumController do
   alias TeacherWeb.AlbumLive.Index
 
   def index(conn, _params) do
+    #LiveView.Controller.live_render(conn, Index, session: %{})
     LiveView.Controller.live_render(conn, Index, session: %{})
   end
 
