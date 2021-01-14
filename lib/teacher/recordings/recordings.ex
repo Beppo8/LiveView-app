@@ -8,6 +8,12 @@ defmodule Teacher.Recordings do
 
   alias Teacher.Recordings.{Category, Album}
 
+  @topic "albums"
+
+  def subscribe do
+    Phoenix.PubSub.subscribe(Teacher.PubSub, @topic)
+  end
+
   @doc """
   Returns the list of albums.
 

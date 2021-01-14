@@ -6,6 +6,7 @@ defmodule TeacherWeb.AlbumLive.Index do
   alias TeacherWeb.Router.Helpers, as: Routes
 
   def mount(_session, socket) do
+    if connected?(socket), do: Recordings.subscribe()
     albums = Recordings.list_albums()
     {:ok, assign(socket, albums: albums, editable_id: nil)}
   end
