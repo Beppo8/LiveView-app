@@ -18,7 +18,20 @@
         <td><%= album.artist %></td>
         <td><%= album.title %></td>
         <td><%= album.category.name %></td>
-        <td><%= album.summary %></td>
+        <%= if @editable_id == album.id do%>
+        <td>
+          <%= form_for @changeset, "#", [phx_submit: :save], fn f -> %>
+            <%= hidden_input f, :id, name: "id" %>
+            <%= text_input f, :summary %>
+            <%= error_tag f, :summary %>
+            <%= submit "Update", phx_disable_with: "Saving..." %>
+          <% end %>
+        </td>
+        <% else %>
+          <td phx-click="edit<%= album.id %>" class="editable-field">
+            <%= album.summary %>
+          </td>
+        <% end %>
         <td><%= album.year %></td>
         <td>
           <%= link "Show", to: Routes.album_path(@socket, :show, album) %>
